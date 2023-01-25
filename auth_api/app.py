@@ -4,6 +4,8 @@ from flask import send_from_directory
 from flask_jwt_extended import JWTManager
 from flask_swagger_ui import get_swaggerui_blueprint
 from opentelemetry.instrumentation.flask import FlaskInstrumentor
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 
 from src.db.db import init_db
 from src.api.v1.api_v1_blueprint import app_v1_blueprint
@@ -36,8 +38,10 @@ def create_app():
             'redirect_uri': oauthservices_settings.GOOGLE.REDIRECT_URI,
         }
     }
-    jwt = JWTManager(app)
+    app.config['RATELIMIT_STORAGE_URL'] = "redis://redis:6379"
+    limiter = Limiter(app=app, key_func=get_remote_address, default_limits=["300 per day", "60 per hour"])
 
+    jwt = JWTManager(app)
     @jwt.token_in_blocklist_loader
     def check_if_token_is_revoked(jwt_header, jwt_payload: dict):
         """
@@ -69,7 +73,6 @@ def create_app():
             raise RuntimeError('Request id is required')
 
     return app
-
 
 def start_app():
     app = create_app()
