@@ -7,7 +7,7 @@ from opentelemetry.instrumentation.flask import FlaskInstrumentor
 
 from src.db.db import init_db
 from src.api.v1.api_v1_blueprint import app_v1_blueprint
-from src.core.config import project_settings, redis_settings
+from src.core.config import project_settings, redis_settings, oauthservices_settings
 from src.cache.redis_cache import redis_cache
 from src.db.roles_service import get_user_primary_role
 from src.api.v1.admin import create_admin_role
@@ -24,6 +24,18 @@ def create_app():
     app.config['JWT_SECRET_KEY'] = project_settings.SECRET_KEY
     app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(seconds=redis_settings.ACCESS_EXPIRES_IN_SECONDS)
     app.config['JWT_REFRESH_TOKEN_EXPIRES'] = timedelta(seconds=redis_settings.REFRESH_EXPIRES_IN_SECONDS)
+    app.config['OAUTH_CREDENTIALS'] = {
+        'yandex': {
+            'id': oauthservices_settings.YANDEX.ID,
+            'secret': oauthservices_settings.YANDEX.SECRET,
+            'redirect_uri': oauthservices_settings.YANDEX.REDIRECT_URI,
+        },
+        'google': {
+            'id': oauthservices_settings.GOOGLE.ID,
+            'secret': oauthservices_settings.GOOGLE.SECRET,
+            'redirect_uri': oauthservices_settings.GOOGLE.REDIRECT_URI,
+        }
+    }
     jwt = JWTManager(app)
 
     @jwt.token_in_blocklist_loader

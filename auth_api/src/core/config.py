@@ -1,6 +1,6 @@
 from datetime import timedelta
 from logging import config as logging_config
-from pydantic import BaseSettings, Field
+from pydantic import BaseSettings, BaseModel, Field
 from src.core.logger import LOGGING
 
 # Применяем настройки логирования
@@ -26,7 +26,23 @@ class RedisSettings(BaseSettings):
     ACCESS_EXPIRES_IN_SECONDS = Field(timedelta(hours=1).seconds, env='ACCESS_EXPIRES_IN_SECONDS')
     REFRESH_EXPIRES_IN_SECONDS = Field(timedelta(days=90).seconds, env='REFRESH_EXPIRES_IN_SECONDS')
 
+class OAuthYandexSettings(BaseModel):
+    ID: str = Field('b7835873699d4da8bdb3f5736313e1e7', env='YANDEX_ID')
+    SECRET: str = Field('25f1a435daa1477ea32a66b9c0b9e75b', env='YANDEX_SECRET')
+    REDIRECT_URI: str = Field('https://oauth.yandex.ru/verification_code', env='YANDEX_REDIRECT_URI')
+
+class OAuthGoogleSettings(BaseModel):
+    ID: str = Field('964793851838-rg0mmuh52okm2vc054v50rbdv0hlj0fg.apps.googleusercontent.com', env='GOOGLE_ID')
+    SECRET: str = Field('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', env='GOOGLE_SECRET')
+    REDIRECT_URI: str = Field('http://localhost/api/v1/google_callback', env='GOOGLE_REDIRECT_URI')
+
+
+class OAuthSettings(BaseSettings):
+    YANDEX: OAuthYandexSettings
+    GOOGLE: OAuthGoogleSettings
+
 
 project_settings = ProjectSettings()
 db_settings = DbSettings()
 redis_settings = RedisSettings()
+oauthservices_settings = OAuthSettings()
