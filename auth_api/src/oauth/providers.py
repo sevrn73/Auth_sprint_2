@@ -49,6 +49,7 @@ class YandexSignIn(OAuthSignIn):
             access_token_url='https://oauth.yandex.ru/token',
             base_url='https://oauth.yandex.ru',
         )
+        self.service_id = "01"
 
     def authorize(self):
         return redirect(
@@ -92,6 +93,7 @@ class GoogleSignIn(OAuthSignIn):
             access_token_url='https://oauth2.googleapis.com/token',
             base_url='https://www.googleapis.com/',
         )
+        self.service_id = "02"
 
     def authorize(self):
         return redirect(
