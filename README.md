@@ -18,7 +18,7 @@ docker-compose up
 
 - [Админ панель django](http://localhost/admin/)
 - [Fastapi](http://localhost/api/openapi)
-- [AuthOpenAPI](http://localhost/docs/)
+- [AuthOpenAPI](http://localhost/auth_api/docs/)
 
 ## Запуск тестов AuthApi
 

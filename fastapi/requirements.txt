@@ -8,3 +8,4 @@ uvloop==0.14.0
 requests==2.28.1
 psycopg2==2.9.3
 python-dotenv==0.21.0
+httpx==0.22.0

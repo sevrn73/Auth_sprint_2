@@ -5,11 +5,12 @@ from typing import List
 from core.exception_detail import ExceptionDetail
 from services.genre import GenreService, get_genre_service
 from models.genre import Genre
+from auth_bearer import JWTBearer
 
 router = APIRouter()
 
 
-@router.get('/{genre_id}', response_model=Genre)
+@router.get('/{genre_id}', dependencies=[Depends(JWTBearer())], response_model=Genre)
 async def genre_details(
     genre_id: str = Query(default='6c162475-c7ed-4461-9184-001ef3d9f26e'),
     genre_service: GenreService = Depends(get_genre_service),
@@ -21,7 +22,7 @@ async def genre_details(
     return Genre(id=genre.id, genre=genre.genre)
 
 
-@router.get('/genres/', response_model=List[Genre])
+@router.get('/genres/', dependencies=[Depends(JWTBearer())], response_model=List[Genre])
 async def genres_details(
     sort: bool = False,
     page_number: int = Query(default=1, alias='page[number]', ge=1),
