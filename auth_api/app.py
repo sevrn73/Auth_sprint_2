@@ -14,7 +14,7 @@ from src.api.v1.admin import create_admin_role
 from src.core.tracer import configure_tracer
 
 SWAGGER_URL = '/auth_api/docs/'
-API_URL = '/static/swagger_config.yaml'
+API_URL = '/auth_api/static/swagger_config.yaml'
 swagger_blueprint = get_swaggerui_blueprint(SWAGGER_URL, API_URL)
 
 
@@ -43,7 +43,7 @@ def create_app():
     app.register_blueprint(app_v1_blueprint, url_prefix='/v1')
     app.cli.add_command(create_admin_role)
 
-    @app.route('/static/<path:path>')
+    @app.route('/auth_api/static/<path:path>')
     def send_static(path):
         return send_from_directory('static', path)
 
