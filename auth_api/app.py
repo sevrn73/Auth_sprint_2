@@ -9,6 +9,7 @@ from flask_limiter.util import get_remote_address
 
 from src.db.db import init_db
 from src.api.v1.api_v1_blueprint import app_v1_blueprint
+from src.api.v1.oauth import oauth
 from src.core.config import project_settings, redis_settings, oauthservices_settings
 from src.cache.redis_cache import redis_cache
 from src.db.roles_service import get_user_primary_role
@@ -18,7 +19,8 @@ from src.core.tracer import configure_tracer
 SWAGGER_URL = '/auth_api/docs/'
 API_URL = '/auth_api/static/swagger_config.yaml'
 swagger_blueprint = get_swaggerui_blueprint(SWAGGER_URL, API_URL)
-limiter = Limiter(key_func=get_remote_address, default_limits=["300 per day", "60 per hour"])
+limiter = Limiter(key_func=get_remote_address, default_limits=['300 per day', '60 per hour'])
+
 
 def create_app():
     app = Flask(__name__)
@@ -36,12 +38,13 @@ def create_app():
             'id': oauthservices_settings.GOOGLE.ID,
             'secret': oauthservices_settings.GOOGLE.SECRET,
             'redirect_uri': oauthservices_settings.GOOGLE.REDIRECT_URI,
-        }
+        },
     }
-    app.config['RATELIMIT_STORAGE_URL'] = "redis://redis:6379"
+    app.config['RATELIMIT_STORAGE_URL'] = 'redis://redis:6379'
     limiter.init_app(app)
 
     jwt = JWTManager(app)
+
     @jwt.token_in_blocklist_loader
     def check_if_token_is_revoked(jwt_header, jwt_payload: dict):
         """
@@ -57,6 +60,7 @@ def create_app():
 
     app.register_blueprint(swagger_blueprint)
     app.register_blueprint(app_v1_blueprint, url_prefix='/v1')
+    app.register_blueprint(oauth, url_prefix='/v1')
     app.cli.add_command(create_admin_role)
 
     @app.route('/auth_api/static/<path:path>')
@@ -73,6 +77,7 @@ def create_app():
             raise RuntimeError('Request id is required')
 
     return app
+
 
 def start_app():
     app = create_app()

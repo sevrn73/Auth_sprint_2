@@ -12,7 +12,6 @@ from src.api.v1.account import (
 )
 from src.api.v1.roles import create_role, delete_role, change_role, roles_list
 from src.api.v1.managing import user_roles, assign_role, detach_role
-from src.api.v1.oauth import oauth_login
 
 
 app_v1_blueprint = Blueprint('v1', __name__)
@@ -34,5 +33,3 @@ app_v1_blueprint.add_url_rule('/roles_list', methods=['GET'], view_func=roles_li
 app_v1_blueprint.add_url_rule('/user_roles', methods=['GET'], view_func=user_roles)
 app_v1_blueprint.add_url_rule('/assign_role', methods=['POST'], view_func=assign_role)
 app_v1_blueprint.add_url_rule('/detach_role', methods=['DELETE'], view_func=detach_role)
-
-app_v1_blueprint.add_url_rule('/login_oauth', methods=['POST'], view_func=oauth_login)

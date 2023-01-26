@@ -303,46 +303,31 @@ paths:
           description: List of user's roles
         '401':
           description: Could not verify
-  /login_oauth:
-    post:
+  /authorize/{provider}:
+    get:
+      summary: войти через соцсети
       tags:
-        - oauth
-      summary: OAuth аутентификация.
-      description: Аутентификация с помощью токена полученного от OAuth-провайдера.
+        - Managing User's roles
+      description: Вход пользователя в систему через соцсети
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Token'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '418':
+          $ref: '#/components/responses/ImaTeapot'
+        '500':
+          $ref: '#/components/responses/InternalError'
       parameters:
-        - in: query
-          name: provider
+        - name: provider
+          in: path
+          required: true
+          description: "The provider of the OAuth service."
           schema:
             type: string
-            default: yandex
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                access_token:
-                  type: string
-                  example: AAAAAAA00000000000-AAAAAA00000000000000
-      responses:
-        200:
-          description: Аутентификация прошла успешно.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Tokens'
-        400:
-          $ref: '#/components/responses/BadRequest'
-        403:
-          $ref: '#/components/responses/AccessDenied'
-        404:
-          $ref: '#/components/responses/NotFound'
-        409:
-          description: Такое имя пользователя или email уже существуют.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-        429:
-          $ref: '#/components/responses/TooManyRequests'
-      security: []
