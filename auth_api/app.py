@@ -40,7 +40,7 @@ def create_app():
             'redirect_uri': oauthservices_settings.GOOGLE.REDIRECT_URI,
         },
     }
-    app.config['RATELIMIT_STORAGE_URL'] = 'redis://redis:6379'
+    app.config['RATELIMIT_STORAGE_URL'] = redis_settings.RATELIMIT_STORAGE_URL
     limiter.init_app(app)
 
     jwt = JWTManager(app)

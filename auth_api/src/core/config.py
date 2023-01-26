@@ -25,6 +25,7 @@ class RedisSettings(BaseSettings):
     REDIS_PORT = Field(6379, env='REDIS_PORT')
     ACCESS_EXPIRES_IN_SECONDS = Field(timedelta(hours=1).seconds, env='ACCESS_EXPIRES_IN_SECONDS')
     REFRESH_EXPIRES_IN_SECONDS = Field(timedelta(days=90).seconds, env='REFRESH_EXPIRES_IN_SECONDS')
+    RATELIMIT_STORAGE_URL = Field('redis://redis:6379', env='RATELIMIT_STORAGE_URL')
 
 
 class OAuthYandexSettings(BaseModel):

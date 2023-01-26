@@ -28,4 +28,21 @@ def oauth_authorize(provider):
 def oauth_callback(provider):
     oauth = OAuthSignIn.get_provider(provider)
     social_id, username, email = oauth.callback()
-    return jsonify(social_id=social_id, username=username, email=email)
+    service_name = oauth.provider_name
+    service_id = oauth.service_id
+
+    account_model = OAuthAccount.query.filter_by(social_id=social_id).first()
+    if account_model is None:
+        email_exist = User.query.filter_by(email=email).first()
+        if email_exist:
+            email = None
+        user_model = create_user_oauth(username, email, social_id, service_id, service_name)
+    else:
+        user_model = User.query.filter_by(id=account_model["user_id"]).first()
+
+    add_record_to_login_history(user_model.id, request.user_agent.string)
+
+    access_token, refresh_token = oauth.create_tokens(identity=user_model.id)
+    return jsonify(access_token=access_token, refresh_token=refresh_token)
+
+

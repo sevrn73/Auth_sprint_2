@@ -24,8 +24,8 @@ def add_record_to_oauth_account(user_id, social_id, service_id, service_name):
     db.session.commit()
 
 
-def create_user_oauth(email, social_id, service_id, service_name) -> User:
-    login = uuid.uuid4()
+def create_user_oauth(username, email, social_id, service_id, service_name) -> User:
+    login = username
     password = generate_password()
     hashed_password = generate_password_hash(password)
     new_user = User(login=login, password=hashed_password, email=email)
