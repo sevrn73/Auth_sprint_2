@@ -7,11 +7,11 @@ def parse_from_postgres_to_es(data: dict):
     writers = {}
     directors = {}
     for person in film_data.persons:
-        if person.role == "actor" and person.person_id not in actors:
+        if person.role == 'actor' and person.person_id not in actors:
             actors[person.person_id] = person.full_name
-        elif person.role == "writer" and person.person_id not in writers:
+        elif person.role == 'writer' and person.person_id not in writers:
             writers[person.person_id] = person.full_name
-        elif person.role == "director" and person.person_id not in directors:
+        elif person.role == 'director' and person.person_id not in directors:
             directors[person.person_id] = person.full_name
 
     es_data = ESFilmworkData(
@@ -23,17 +23,17 @@ def parse_from_postgres_to_es(data: dict):
         director=list(directors.values()),
         actors_names=list(actors.values()),
         writers_names=list(writers.values()),
-        actors=[{"id": id, "name": full_name} for id, full_name in actors.items()],
-        writers=[{"id": id, "name": full_name} for id, full_name in actors.items()],
+        actors=[{'id': id, 'name': full_name} for id, full_name in actors.items()],
+        writers=[{'id': id, 'name': full_name} for id, full_name in actors.items()],
     )
     return es_data
 
 
 def parse_persons_postgres_to_es(data: dict):
     person_data = ESPersonData(
-        id=data["id"],
-        name=data["name"],
-        film_ids=[_["film_work_id"] for _ in data["film_ids"]],
+        id=data['id'],
+        name=data['name'],
+        film_ids=[_['film_work_id'] for _ in data['film_ids']],
     )
     return person_data
 

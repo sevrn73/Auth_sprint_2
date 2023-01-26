@@ -9,13 +9,13 @@ from state import State
 
 
 class EtlProcess:
-    ITER_MODEL_NAMES = ["film_work", "person", "genre"]
+    ITER_MODEL_NAMES = ['film_work', 'person', 'genre']
 
     def init_process(
         self, pg_conn: _connection, curs: DictCursor, es_connect: dict, state: State, model_name: str
     ) -> tuple:
-        last_modified = state.get_state("last_modified")
-        offset = state.get_state("offset")
+        last_modified = state.get_state('last_modified')
+        offset = state.get_state('offset')
         postgres_extractor = PSExtract(pg_conn, curs, offset, model_name)
         es_loader = ESLoad(**es_connect, model_name=model_name)
         return last_modified, postgres_extractor, es_loader
@@ -34,16 +34,16 @@ class EtlProcess:
                 es_loader.send_data(transformed_data)
 
                 postgres_extractor.offset += len(data)
-                state.set_state("offset", postgres_extractor.offset)
+                state.set_state('offset', postgres_extractor.offset)
                 state.set_state(
-                    "last_modified",
-                    data[-1]["modified"].strftime("%Y-%m-%d")
-                    if "modified" in data[-1]
-                    else datetime.now().strftime("%Y-%m-%d"),
+                    'last_modified',
+                    data[-1]['modified'].strftime('%Y-%m-%d')
+                    if 'modified' in data[-1]
+                    else datetime.now().strftime('%Y-%m-%d'),
                 )
             else:
                 postgres_extractor.offset = 0
-                state.set_state("offset", 0)
+                state.set_state('offset', 0)
                 break
 
     @staticmethod

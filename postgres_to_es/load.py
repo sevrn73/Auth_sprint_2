@@ -11,5 +11,5 @@ class ESLoad:
 
     @backoff()
     def send_data(self, es_data: List[BaseModel]) -> Tuple[int, list]:
-        query = [{"_index": self.model_name, "_id": data.id, "_source": data.dict()} for data in es_data]
+        query = [{'_index': self.model_name, '_id': data.id, '_source': data.dict()} for data in es_data]
         helpers.bulk(self.es, query)

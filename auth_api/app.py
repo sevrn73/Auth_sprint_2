@@ -1,8 +1,9 @@
 from datetime import timedelta
-from flask import Flask
+from flask import Flask, request
 from flask import send_from_directory
 from flask_jwt_extended import JWTManager
 from flask_swagger_ui import get_swaggerui_blueprint
+from opentelemetry.instrumentation.flask import FlaskInstrumentor
 
 from src.db.db import init_db
 from src.api.v1.api_v1_blueprint import app_v1_blueprint
@@ -10,8 +11,9 @@ from src.core.config import project_settings, redis_settings
 from src.cache.redis_cache import redis_cache
 from src.db.roles_service import get_user_primary_role
 from src.api.v1.admin import create_admin_role
+from src.core.tracer import configure_tracer
 
-SWAGGER_URL = '/docs/'
+SWAGGER_URL = '/auth_api/docs/'
 API_URL = '/static/swagger_config.yaml'
 swagger_blueprint = get_swaggerui_blueprint(SWAGGER_URL, API_URL)
 
@@ -44,6 +46,15 @@ def create_app():
     @app.route('/static/<path:path>')
     def send_static(path):
         return send_from_directory('static', path)
+
+    configure_tracer()
+    FlaskInstrumentor().instrument_app(app)
+
+    @app.before_request
+    def before_request():
+        request_id = request.headers.get('X-Request-Id')
+        if not request_id:
+            raise RuntimeError('Request id is required')
 
     return app
 
