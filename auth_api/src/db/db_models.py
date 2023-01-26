@@ -40,9 +40,9 @@ class OAuthAccount(db.Model):
 
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, unique=True, nullable=False)
     user_id = db.Column(UUID(as_uuid=True), ForeignKey(User.id), nullable=False)
+    social_id = db.Column(db.String, nullable=False)
     service_id = db.Column(db.Text, nullable=False)
     service_name = db.Column(db.Text, nullable=False)
-    social_id = db.Column(db.String, nullable=False)
 
     def __repr__(self):
         return f"<OAuthAccount {self.service_name}:{self.user_id}>"

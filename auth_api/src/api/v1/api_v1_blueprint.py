@@ -35,5 +35,4 @@ app_v1_blueprint.add_url_rule('/user_roles', methods=['GET'], view_func=user_rol
 app_v1_blueprint.add_url_rule('/assign_role', methods=['POST'], view_func=assign_role)
 app_v1_blueprint.add_url_rule('/detach_role', methods=['DELETE'], view_func=detach_role)
 
-app_v1_blueprint.add_url_rule('/login/<string:provider>', methods=['POST'], view_func=oauth_login)
-# @app_v1_blueprint.route('/login/<string:provider>', methods=['POST'])
+app_v1_blueprint.add_url_rule('/login_oauth', methods=['POST'], view_func=oauth_login)

@@ -303,3 +303,46 @@ paths:
           description: List of user's roles
         '401':
           description: Could not verify
+  /login_oauth:
+    post:
+      tags:
+        - oauth
+      summary: OAuth аутентификация.
+      description: Аутентификация с помощью токена полученного от OAuth-провайдера.
+      parameters:
+        - in: query
+          name: provider
+          schema:
+            type: string
+            default: yandex
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                access_token:
+                  type: string
+                  example: AAAAAAA00000000000-AAAAAA00000000000000
+      responses:
+        200:
+          description: Аутентификация прошла успешно.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tokens'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        403:
+          $ref: '#/components/responses/AccessDenied'
+        404:
+          $ref: '#/components/responses/NotFound'
+        409:
+          description: Такое имя пользователя или email уже существуют.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        429:
+          $ref: '#/components/responses/TooManyRequests'
+      security: []

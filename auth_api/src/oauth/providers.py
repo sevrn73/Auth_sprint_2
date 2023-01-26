@@ -14,9 +14,6 @@ class OAuthSignIn:
         self.consumer_secret = credentials["secret"]
         self.consumer_redirect_uri = credentials["redirect_uri"]
 
-    def authorize(self):
-        pass
-
     def callback(self):
         pass
 
@@ -51,6 +48,9 @@ class YandexSignIn(OAuthSignIn):
         if not access_token:
             return None
         oauth_session = self.service.get_session(token=access_token)
+        print(1113413414)
+        print(oauth_session.json())
+        print(14142124124)
         user_data = oauth_session.get("info?format=json").json()
         return {
             "social_id": f'yandex::{user_data["client_id"]}',
@@ -65,8 +65,6 @@ class GoogleSignIn(OAuthSignIn):
             name="google",
             client_id=self.consumer_id,
             client_secret=self.consumer_secret,
-            # authorize_url="",
-            # base_url="",
         )
         self.service_id = "02"
 

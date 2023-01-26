@@ -3,8 +3,6 @@ import string
 import uuid
 from werkzeug.security import generate_password_hash
 
-
-from src.db.oauth_service import generate_password
 from src.db.db import db
 from src.db.db_models import User, OAuthAccount
 

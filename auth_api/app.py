@@ -18,7 +18,7 @@ from src.core.tracer import configure_tracer
 SWAGGER_URL = '/auth_api/docs/'
 API_URL = '/auth_api/static/swagger_config.yaml'
 swagger_blueprint = get_swaggerui_blueprint(SWAGGER_URL, API_URL)
-
+limiter = Limiter(key_func=get_remote_address, default_limits=["300 per day", "60 per hour"])
 
 def create_app():
     app = Flask(__name__)
@@ -39,7 +39,7 @@ def create_app():
         }
     }
     app.config['RATELIMIT_STORAGE_URL'] = "redis://redis:6379"
-    limiter = Limiter(app=app, key_func=get_remote_address, default_limits=["300 per day", "60 per hour"])
+    limiter.init_app(app)
 
     jwt = JWTManager(app)
     @jwt.token_in_blocklist_loader

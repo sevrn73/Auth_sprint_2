@@ -3,7 +3,7 @@ from flask import Blueprint
 import uuid
 from http.client import BAD_REQUEST, FORBIDDEN, NOT_FOUND
 
-from flask import Blueprint, current_app as app, jsonify, request
+from flask import  current_app as jsonify, request
 
 from flask_jwt_extended import create_access_token
 from flask_jwt_extended import create_refresh_token
@@ -11,13 +11,13 @@ from flask_jwt_extended import create_refresh_token
 from src.oauth.providers import OAuthSignIn
 from src.db.oauth_service import create_user_oauth
 from src.db.account_service import add_record_to_login_history
-from src.db.db import db
-from src.db.db_models import User, LoginHistory, OAuthAccount
+
+from src.db.db_models import User, OAuthAccount
 
 
-# @blueprint.route('/login/<string:provider>', methods=['POST'])
-def oauth_login(provider):
 
+def oauth_login():
+    provider = request.values.get('provider')
     if not request.is_json:
         return jsonify({"msg": "Missing JSON in request."}), BAD_REQUEST
     provider_oauth = OAuthSignIn.get_provider(provider)
