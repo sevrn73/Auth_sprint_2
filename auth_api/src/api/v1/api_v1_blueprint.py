@@ -13,6 +13,7 @@ from src.api.v1.account import (
 from src.api.v1.roles import create_role, delete_role, change_role, roles_list
 from src.api.v1.managing import user_roles, assign_role, detach_role
 
+
 app_v1_blueprint = Blueprint('v1', __name__)
 app_v1_blueprint.add_url_rule('/check_perm', methods=['GET'], view_func=check_perm)
 
