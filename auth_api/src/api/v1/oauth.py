@@ -1,17 +1,9 @@
 from flask import Blueprint
-
-import uuid
-from http.client import BAD_REQUEST, FORBIDDEN, NOT_FOUND
-
-from flask import current_app, request, jsonify
-
-from flask_jwt_extended import create_access_token
-from flask_jwt_extended import create_refresh_token
+from flask import request, jsonify
 
 from src.oauth.providers import OAuthSignIn
 from src.db.oauth_service import create_user_oauth
 from src.db.account_service import add_record_to_login_history
-
 from src.db.db_models import User, OAuthAccount
 
 
@@ -38,11 +30,8 @@ def oauth_callback(provider):
             email = None
         user_model = create_user_oauth(username, email, social_id, service_id, service_name)
     else:
-        user_model = User.query.filter_by(id=account_model["user_id"]).first()
+        user_model = User.query.filter_by(id=account_model.user_id).first()
 
     add_record_to_login_history(user_model.id, request.user_agent.string)
 
-    access_token, refresh_token = oauth.create_tokens(identity=user_model.id)
-    return jsonify(access_token=access_token, refresh_token=refresh_token)
-
-
+    return oauth.create_tokens(identity=user_model.id)

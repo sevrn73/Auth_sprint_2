@@ -38,6 +38,30 @@ components:
 security:
   - Bearer: []
 paths:
+  /authorize/{provider}:
+    get:
+      summary: войти через соцсети
+      tags:
+        - Account
+      description: Вход пользователя в систему через соцсети
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Token'
+        '401':
+          description: Role or login is empty
+        '400':
+          description: Login already existed
+      parameters:
+        - name: provider
+          in: path
+          required: true
+          description: "The provider of the OAuth service."
+          schema:
+            type: string
   /login:
     post:
       tags:
@@ -303,31 +327,3 @@ paths:
           description: List of user's roles
         '401':
           description: Could not verify
-  /authorize/{provider}:
-    get:
-      summary: войти через соцсети
-      tags:
-        - Managing User's roles
-      description: Вход пользователя в систему через соцсети
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Token'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '418':
-          $ref: '#/components/responses/ImaTeapot'
-        '500':
-          $ref: '#/components/responses/InternalError'
-      parameters:
-        - name: provider
-          in: path
-          required: true
-          description: "The provider of the OAuth service."
-          schema:
-            type: string

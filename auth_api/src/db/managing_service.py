@@ -10,7 +10,8 @@ def get_roles_by_user(login: str) -> List[Roles]:
     output = []
     for role in roles:
         role = Roles.query.filter_by(id=role.role_id).first()
-        output.append(role)
+        if role.name not in output:
+            output.append(role.name)
     return output
 
 

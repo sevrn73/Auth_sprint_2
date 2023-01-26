@@ -1,5 +1,4 @@
 import uuid
-from datetime import datetime
 from typing import List
 from werkzeug.security import generate_password_hash
 
@@ -20,14 +19,14 @@ def get_user_by_identity(identity: uuid) -> User:
 
 
 def add_record_to_login_history(id: uuid, user_agent: str) -> None:
-    new_session = LoginHistory(user_id=id, user_agent=user_agent, auth_date=datetime.now())
+    new_session = LoginHistory(user_id=id, user_agent=user_agent)
     db.session.add(new_session)
     db.session.commit()
 
 
-def create_user(login: str, password: str) -> User:
+def create_user(login: str, password: str, email: str = None) -> User:
     hashed_password = generate_password_hash(password)
-    new_user = User(login=login, password=hashed_password)
+    new_user = User(login=login, password=hashed_password, email=email)
     db.session.add(new_user)
     db.session.commit()
 

@@ -7,7 +7,7 @@ from src.db.db import db
 
 
 class User(db.Model):
-    __tablename__ = "users"
+    __tablename__ = 'users'
 
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, unique=True, nullable=False)
     login = db.Column(db.String, unique=True, nullable=False)
@@ -17,7 +17,17 @@ class User(db.Model):
     last_name = db.Column(db.String, nullable=True)
 
     def __repr__(self):
-        return f"<User {self.login}>"
+        return f'<User {self.login}>'
+
+
+def create_partition(target, connection, **kw) -> None:
+    """Создает партицирование в модели LoginHistory."""
+    connection.execute(
+        """CREATE TABLE IF NOT EXISTS "login_history_2022" PARTITION OF "login_history" FOR VALUES FROM ('2022-1-1 00:00:00') TO ('2023-1-1 00:00:00')"""
+    )
+    connection.execute(
+        """CREATE TABLE IF NOT EXISTS "login_history_2023" PARTITION OF "login_history" FOR VALUES FROM ('2023-1-1 00:00:00') TO ('2024-1-1 00:00:00')"""
+    )
 
 
 class LoginHistory(db.Model):
@@ -26,17 +36,18 @@ class LoginHistory(db.Model):
         UniqueConstraint('id', 'auth_date'),
         {
             'postgresql_partition_by': 'RANGE (auth_date)',
+            'listeners': [('after_create', create_partition)],
         },
     )
 
-    id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, unique=True, nullable=False)
+    id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, nullable=False)
     user_id = db.Column(UUID(as_uuid=True), ForeignKey(User.id))
     user_agent = db.Column(db.String, nullable=False)
-    auth_date = db.Column(db.DateTime, nullable=False, primary_key=True)
+    auth_date = db.Column(db.DateTime, nullable=False, primary_key=True, default=datetime.datetime.now())
 
 
 class OAuthAccount(db.Model):
-    __tablename__ = "oauth_accaunt"
+    __tablename__ = 'oauth_accaunt'
 
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, unique=True, nullable=False)
     user_id = db.Column(UUID(as_uuid=True), ForeignKey(User.id), nullable=False)
@@ -45,21 +56,21 @@ class OAuthAccount(db.Model):
     service_name = db.Column(db.Text, nullable=False)
 
     def __repr__(self):
-        return f"<OAuthAccount {self.service_name}:{self.user_id}>"
+        return f'<OAuthAccount {self.service_name}:{self.user_id}>'
 
 
 class Roles(db.Model):
-    __tablename__ = "roles"
+    __tablename__ = 'roles'
 
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, unique=True, nullable=False)
     name = db.Column(db.String, unique=True, nullable=False)
 
     def __repr__(self):
-        return f"<Roles {self.name}>"
+        return f'<Roles {self.name}>'
 
 
 class UsersRoles(db.Model):
-    __tablename__ = "users_roles"
+    __tablename__ = 'users_roles'
 
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, unique=True, nullable=False)
     user_id = db.Column(UUID(as_uuid=True), ForeignKey(User.id))

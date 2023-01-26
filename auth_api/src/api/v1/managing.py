@@ -17,8 +17,7 @@ def user_roles():
     if not login:
         return make_response('Login is empty', HTTPStatus.UNAUTHORIZED)
     users_roles = get_roles_by_user(login)
-    output = [role.name for role in users_roles]
-    return jsonify(roles=output)
+    return jsonify(roles=users_roles)
 
 
 @roles_required(['admin', 'manager'])

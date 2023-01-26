@@ -29,14 +29,14 @@ def connect_and_start(ps_connect: dict):
 
     logger.info('Database available!')
 
-    p = subprocess.Popen(['alembic', 'revision', '-m', 'initial'])
-    p.wait()
+    # p = subprocess.Popen(['alembic', 'revision', '-m', 'initial'])
+    # p.wait()
 
-    p = subprocess.Popen(['alembic', 'upgrade', 'head'])
-    p.wait()
+    # p = subprocess.Popen(['alembic', 'upgrade', 'head'])
+    # p.wait()
 
-    p = subprocess.Popen(['alembic', 'revision', '--autogenerate'])
-    p.wait()
+    # p = subprocess.Popen(['alembic', 'revision', '--autogenerate'])
+    # p.wait()
 
     p = subprocess.Popen(['alembic', 'upgrade', 'head'])
     p.wait()
