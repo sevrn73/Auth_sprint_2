@@ -11,3 +11,7 @@ Flask-JWT-Extended==4.4.4
 pytest==7.2.1
 requests==2.28.2
 alembic==1.9.2
+opentelemetry-api==1.10.0
+opentelemetry-sdk==1.10.0
+opentelemetry-instrumentation-flask==0.29b1
+opentelemetry-exporter-jaeger==1.10.0

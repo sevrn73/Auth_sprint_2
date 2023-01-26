@@ -1,5 +1,5 @@
 import uuid
-from sqlalchemy import ForeignKey
+from sqlalchemy import ForeignKey, UniqueConstraint
 from sqlalchemy.dialects.postgresql import UUID
 
 from src.db.db import db
@@ -18,11 +18,17 @@ class User(db.Model):
 
 class LoginHistory(db.Model):
     __tablename__ = 'login_history'
+    __table_args__ = (
+        UniqueConstraint('id', 'auth_date'),
+        {
+            'postgresql_partition_by': 'RANGE (auth_date)',
+        },
+    )
 
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, unique=True, nullable=False)
     user_id = db.Column(UUID(as_uuid=True), ForeignKey(User.id))
     user_agent = db.Column(db.String, nullable=False)
-    auth_date = db.Column(db.DateTime, nullable=False)
+    auth_date = db.Column(db.DateTime, nullable=False, primary_key=True)
 
 
 class Roles(db.Model):

@@ -1,10 +1,20 @@
 from flask import Blueprint
 
-from src.api.v1.account import sign_up, login, logout, refresh, login_history, change_login, change_password
+from src.api.v1.account import (
+    sign_up,
+    login,
+    logout,
+    refresh,
+    login_history,
+    change_login,
+    change_password,
+    check_perm,
+)
 from src.api.v1.roles import create_role, delete_role, change_role, roles_list
 from src.api.v1.managing import user_roles, assign_role, detach_role
 
 app_v1_blueprint = Blueprint('v1', __name__)
+app_v1_blueprint.add_url_rule('/check_perm', methods=['GET'], view_func=check_perm)
 
 app_v1_blueprint.add_url_rule('/change_login', methods=['POST'], view_func=change_login)
 app_v1_blueprint.add_url_rule('/change_password', methods=['POST'], view_func=change_password)

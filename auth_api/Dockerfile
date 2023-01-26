@@ -13,4 +13,4 @@ COPY . .
 
 EXPOSE 8001
 
-ENTRYPOINT ["python", "/opt/auth_api/wait_for_db.py"]
+ENTRYPOINT [ "./docker-entrypoint.sh" ]

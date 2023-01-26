@@ -26,6 +26,11 @@ def get_unauthorized_response():
     )
 
 
+@jwt_required()
+def check_perm():
+    return jsonify(message='Ok')
+
+
 def login():
     auth = request.authorization
 

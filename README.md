@@ -1,6 +1,8 @@
 # Проектная работа 5 спринта
 
-[Ссылка на репозиторий](https://github.com/sevrn73/Async_API_sprint_2)
+[Ссылка на репозиторий](https://github.com/sevrn73/Auth_sprint_2)
+
+Участники @sevrn73, @rachet2012
 
 ## Запуск проекта
 
@@ -16,3 +18,10 @@ docker-compose up
 
 - [Админ панель django](http://localhost/admin/)
 - [Fastapi](http://localhost/api/openapi)
+- [AuthOpenAPI](http://localhost/docs/)
+
+## Запуск тестов AuthApi
+
+```
+docker-compose exec auth_api pytest
+```

@@ -2,6 +2,7 @@ version: '3'
 services:
   nginx:
     image: nginx:1.23.2
+    restart: always
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./nginx/configs:/etc/nginx/conf.d:ro
@@ -10,18 +11,15 @@ services:
       - media_volume:/opt/app/media
     depends_on:
       - service
+      - fastapi
+      - auth_api
     ports:
       - "80:80"
 
   redis:
     image: redis:7.0.6-alpine
+    restart: always
     command: redis-server
-
-  jaeger:
-    image: jaegertracing/all-in-one:latest
-    ports:
-      - "6831:6831/udp"
-      - "16686:16686"
 
   db:
     image: postgres:14-alpine
@@ -40,6 +38,7 @@ services:
   service:
     build: app
     image: django:4.0.4
+    restart: always
     volumes:
       - static_volume:/opt/app/static
       - media_volume:/opt/app/media
@@ -52,6 +51,7 @@ services:
   fastapi:
     build: fastapi
     image: fastapi:0.88.0
+    restart: always
     env_file:
       - ./fastapi/.env
     ports:
@@ -65,6 +65,7 @@ services:
 
   elasticsearch:
     image: elasticsearch:7.9.1
+    restart: always
     environment:
       - discovery.type=single-node
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
@@ -80,19 +81,37 @@ services:
     depends_on:
       - service
 
+  auth_db:
+    image: postgres:14-alpine
+    restart: always
+    volumes:
+      - auth_postgres_volume:/var/lib/postgresql/data
+    env_file:
+      - ./auth_api/.env
+    environment:
+      PGDATA: "/var/lib/postgresql/data/pgdata"
+      POSTGRES_HOST_AUTH_METHOD: "trust"
+
   auth_api:
     build: auth_api
     image: auth_api
-    volumes:
-      - static_volume:/opt/auth_api/static
+    restart: always
     env_file:
       - ./auth_api/.env
     depends_on:
-      - db
+      - auth_db
       - redis
 
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    restart: always
+    ports:
+      - "6831:6831/udp"
+      - "16686:16686"
+      
 volumes:
   postgres_volume:
+  auth_postgres_volume:
   static_volume:
   media_volume:
 

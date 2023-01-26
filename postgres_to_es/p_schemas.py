@@ -27,6 +27,11 @@ class ESGenreData(BaseModel):
     description: Optional[str]
 
 
+class ESPersonMData(BaseModel):
+    id: str
+    name: str
+
+
 class ESPersonData(BaseModel):
     id: str
     name: str
@@ -42,5 +47,5 @@ class ESFilmworkData(BaseModel):
     director: List[str]
     actors_names: List[str]
     writers_names: List[str]
-    actors: List[ESPersonData]
-    writers: List[ESPersonData]
+    actors: List[ESPersonMData]
+    writers: List[ESPersonMData]
