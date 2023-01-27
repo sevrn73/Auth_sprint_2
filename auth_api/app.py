@@ -10,7 +10,7 @@ from flask_limiter.util import get_remote_address
 from src.db.db import init_db
 from src.api.v1.api_v1_blueprint import app_v1_blueprint
 from src.api.v1.oauth import oauth
-from src.core.config import project_settings, redis_settings, oauthservices_settings
+from src.core.config import project_settings, redis_settings, oauthservices_settings, jaeger_settings
 from src.cache.redis_cache import redis_cache
 from src.db.roles_service import get_user_primary_role
 from src.api.v1.admin import create_admin_role
@@ -67,8 +67,10 @@ def create_app():
     def send_static(path):
         return send_from_directory('static', path)
 
-    configure_tracer()
+    if jaeger_settings.ENABLE_TRACER:
+        configure_tracer()
     FlaskInstrumentor().instrument_app(app)
+
 
     @app.before_request
     def before_request():
