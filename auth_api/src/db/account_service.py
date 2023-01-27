@@ -33,6 +33,12 @@ def create_user(login: str, password: str, email: str = None) -> User:
     return new_user
 
 
+def delete_user(user_id: str) -> None:
+    user = User.query.filter_by(id=user_id).first()
+    db.session.delete(user)
+    db.session.commit()
+
+
 def change_login_in_db(user: User, new_login: str) -> None:
     user.login = new_login
     db.session.commit()

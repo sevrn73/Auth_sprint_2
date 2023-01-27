@@ -27,8 +27,6 @@ services:
     volumes:
       - postgres_volume:/var/lib/postgresql/data
       - ./scripts:/docker-entrypoint-initdb.d
-    ports:
-      - 5432:5432
     env_file:
       - ./app/example/.env
     environment:
@@ -54,8 +52,6 @@ services:
     restart: always
     env_file:
       - ./fastapi/.env
-    ports:
-      - 8001:8001
     depends_on:
       - db
       - redis
@@ -71,8 +67,6 @@ services:
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
     volumes:
       - /opt/elasticsearch/data
-    ports:
-      - "9200:9200"
 
   etl:
     build: postgres_to_es
@@ -105,9 +99,6 @@ services:
   jaeger:
     image: jaegertracing/all-in-one:latest
     restart: always
-    ports:
-      - "6831:6831/udp"
-      - "16686:16686"
       
 volumes:
   postgres_volume:

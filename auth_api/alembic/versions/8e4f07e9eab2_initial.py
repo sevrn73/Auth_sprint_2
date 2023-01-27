@@ -1,7 +1,7 @@
 """empty message
 
 Revision ID: 8e4f07e9eab2
-Revises: 8544efa2a959
+Revises: 
 Create Date: 2023-01-26 21:06:24.498830
 
 """
@@ -21,7 +21,7 @@ def upgrade() -> None:
     op.create_table(
         'roles',
         sa.Column('id', postgresql.UUID(as_uuid=True), nullable=False),
-        sa.Column('name', sa.String(), nullable=False),
+        sa.Column('name', sa.String(length=20), nullable=False),
         sa.PrimaryKeyConstraint('id'),
         sa.UniqueConstraint('id'),
         sa.UniqueConstraint('name'),
@@ -29,11 +29,11 @@ def upgrade() -> None:
     op.create_table(
         'users',
         sa.Column('id', postgresql.UUID(as_uuid=True), nullable=False),
-        sa.Column('login', sa.String(), nullable=False),
-        sa.Column('password', sa.String(), nullable=False),
-        sa.Column('email', sa.String(), nullable=True),
-        sa.Column('first_name', sa.String(), nullable=True),
-        sa.Column('last_name', sa.String(), nullable=True),
+        sa.Column('login', sa.String(length=20), nullable=False),
+        sa.Column('password', sa.String(length=150), nullable=False),
+        sa.Column('email', sa.String(length=30), nullable=True),
+        sa.Column('first_name', sa.String(length=20), nullable=True),
+        sa.Column('last_name', sa.String(length=20), nullable=True),
         sa.PrimaryKeyConstraint('id'),
         sa.UniqueConstraint('email'),
         sa.UniqueConstraint('id'),
@@ -43,27 +43,21 @@ def upgrade() -> None:
         'login_history',
         sa.Column('id', postgresql.UUID(as_uuid=True), nullable=False),
         sa.Column('user_id', postgresql.UUID(as_uuid=True), nullable=True),
-        sa.Column('user_agent', sa.String(), nullable=False),
+        sa.Column('user_agent', sa.String(length=300), nullable=False),
         sa.Column('auth_date', sa.DateTime(), nullable=False),
-        sa.ForeignKeyConstraint(
-            ['user_id'],
-            ['users.id'],
-        ),
+        sa.ForeignKeyConstraint(['user_id'], ['users.id'], ondelete='CASCADE'),
         sa.PrimaryKeyConstraint('id', 'auth_date'),
         sa.UniqueConstraint('id', 'auth_date'),
         postgresql_partition_by='RANGE (auth_date)',
     )
     op.create_table(
-        'oauth_accaunt',
+        'oauth_account',
         sa.Column('id', postgresql.UUID(as_uuid=True), nullable=False),
         sa.Column('user_id', postgresql.UUID(as_uuid=True), nullable=False),
-        sa.Column('social_id', sa.String(), nullable=False),
+        sa.Column('social_id', sa.String(length=30), nullable=False),
         sa.Column('service_id', sa.Text(), nullable=False),
         sa.Column('service_name', sa.Text(), nullable=False),
-        sa.ForeignKeyConstraint(
-            ['user_id'],
-            ['users.id'],
-        ),
+        sa.ForeignKeyConstraint(['user_id'], ['users.id'], ondelete='CASCADE'),
         sa.PrimaryKeyConstraint('id'),
         sa.UniqueConstraint('id'),
     )

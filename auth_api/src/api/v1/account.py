@@ -15,6 +15,7 @@ from src.db.account_service import (
     change_password_in_db,
     create_user,
     get_login_hystory,
+    delete_user,
 )
 from src.core.config import redis_settings
 from src.cache.redis_cache import redis_cache
@@ -55,6 +56,14 @@ def login():
         return jsonify(access_token=access_token, refresh_token=refresh_token)
 
     return get_unauthorized_response()
+
+
+@jwt_required()
+def delete():
+    identity = get_jwt_identity()
+    delete_user(identity)
+
+    return jsonify(msg='User successfully delete')
 
 
 @jwt_required()
